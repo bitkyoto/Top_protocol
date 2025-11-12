@@ -42,7 +42,7 @@ private:
     Ui::MainWindow *ui;
 
     // crypto primitives
-    MD5 md5;
+    // MD5 md5;
     RSA rsaCA;
     RSA rsaAlice;
     RSA rsaBob;
