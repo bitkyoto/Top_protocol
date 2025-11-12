@@ -7,6 +7,9 @@
 #include "rc4/RC4.h"
 #include "rsa/RSA.h"
 #include "md5/md5.h"
+#include "md5/rmd5.h"
+
+#include "utils/utils.cpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

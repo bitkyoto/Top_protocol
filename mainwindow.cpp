@@ -76,7 +76,10 @@ Certificate MainWindow::loadCertificate(const std::string& filename) {
 std::vector<n_type> MainWindow::signCert(const Certificate& cert, RSA& rsaSigner) {
     std::string data = cert.subject + std::to_string(cert.pub_e) + std::to_string(cert.pub_n);
     std::vector<uint8_t> bytes(data.begin(), data.end());
-    std::vector<uint8_t> h = md5.hash(bytes);
+    // std::vector<uint8_t> h = md5.hash(bytes);
+    // std::vector<uint8_t> h2 = RMD5::hash(bytes);
+    // qDebug() << "Comparing hashes: " << utils::compare(h, h2);
+    std::vector<uint8_t> h = RMD5::hash(bytes);
     std::vector<n_type> sig;
     for (auto b : h)
         sig.push_back(rsaSigner.mod_pow(b, rsaSigner.get_private().first, rsaSigner.get_private().second));
@@ -86,7 +89,8 @@ std::vector<n_type> MainWindow::signCert(const Certificate& cert, RSA& rsaSigner
 bool MainWindow::verifyCert(const Certificate& cert, const Certificate& caCert) {
     std::string data = cert.subject + std::to_string(cert.pub_e) + std::to_string(cert.pub_n);
     std::vector<uint8_t> bytes(data.begin(), data.end());
-    std::vector<uint8_t> h = md5.hash(bytes);
+    // std::vector<uint8_t> h = md5.hash(bytes);
+    std::vector<uint8_t> h = RMD5::hash(bytes);
     for (size_t i = 0; i < cert.signature.size(); ++i) {
         n_type decrypted = RSA().mod_pow(cert.signature[i], caCert.pub_e, caCert.pub_n);
         if (i >= h.size() || decrypted != h[i]) return false;
@@ -183,8 +187,8 @@ void MainWindow::on_btnEncrypt_clicked()
     // подписываем (RC4 ключ + исходное сообщение)
     std::vector<uint8_t> combined = rc4Key;
     combined.insert(combined.end(), plaintext.begin(), plaintext.end());
-    std::vector<uint8_t> hh = md5.hash(combined);
-
+    // std::vector<uint8_t> hh = md5.hash(combined);
+    std::vector<uint8_t> hh = RMD5::hash(combined);
     signature.clear();
     for (auto b : hh)
         signature.push_back(RSA().mod_pow(b, rsaAlice.get_private().first, rsaAlice.get_private().second));
@@ -302,11 +306,11 @@ void MainWindow::on_btnVerify_clicked()
     // пересчитываем хэш
     std::vector<uint8_t> combined = rc4Recovered;
     combined.insert(combined.end(), plain.begin(), plain.end());
-    std::vector<uint8_t> hh = md5.hash(combined);
-
+    // std::vector<uint8_t> hh = md5.hash(combined);
+    std::vector<uint8_t> hh = RMD5::hash(combined);
     // проверяем подпись Алисы
     try {
-        certAlice = loadCertificate("Bob/cert_Alice.txt");
+        certAlice = loadCertificate("Alice/cert_Alice.txt");
     } catch (...) {
         QMessageBox::warning(this, "Verify", "Cannot load Alice certificate.");
         return;
