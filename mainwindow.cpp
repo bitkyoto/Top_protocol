@@ -96,7 +96,7 @@ std::vector<n_type> MainWindow::signCert(const Certificate &cert, RSA &rsaSigner
 {
     std::string data = cert.subject + std::to_string(cert.pub_e) + std::to_string(cert.pub_n);
     std::vector<uint8_t> bytes(data.begin(), data.end());
-    std::vector<uint8_t> h = md5.hash(bytes);
+    std::vector<uint8_t> h = RMD5::hash(bytes);
 
     std::vector<n_type> sig;
     for (auto b : h)
@@ -110,7 +110,7 @@ bool MainWindow::verifyCert(const Certificate &cert, const Certificate &caCert)
 {
     std::string data = cert.subject + std::to_string(cert.pub_e) + std::to_string(cert.pub_n);
     std::vector<uint8_t> bytes(data.begin(), data.end());
-    std::vector<uint8_t> h = md5.hash(bytes);
+    std::vector<uint8_t> h = RMD5::hash(bytes);
 
     for (size_t i = 0; i < cert.signature.size(); ++i)
     {
@@ -211,7 +211,7 @@ void MainWindow::on_btnSign_clicked()
     // формируем хэш RC4 ключ + сообщение
     std::vector<uint8_t> combined = rc4Key;
     combined.insert(combined.end(), plaintext.begin(), plaintext.end());
-    std::vector<uint8_t> hh = md5.hash(combined);
+    std::vector<uint8_t> hh = RMD5::hash(combined);
 
     signature.clear();
     for (auto b : hh)
@@ -446,8 +446,7 @@ void MainWindow::on_btnVerify_clicked()
     // формируем хэш RC4 ключ + сообщение
     std::vector<uint8_t> combined = rc4Recovered;
     combined.insert(combined.end(), plainMessage.begin(), plainMessage.end());
-    std::vector<uint8_t> hh = md5.hash(combined);
-
+    std::vector<uint8_t> hh = RMD5::hash(combined);
     // расшифровываем подпись с помощью открытого ключа Алисы
     std::vector<uint8_t> decryptedHash;
     for (auto s : signatureRecovered)
