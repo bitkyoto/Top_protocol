@@ -30,6 +30,7 @@ private slots:
     void on_btnGenCA_clicked();
     void on_btnIssueCerts_clicked();
     void on_btnReqBobCert_clicked();
+    void on_btnSign_clicked();
     void on_btnEncrypt_clicked();
     void on_btnSend_clicked();
     void on_btnDecrypt_clicked();

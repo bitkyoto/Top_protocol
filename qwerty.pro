@@ -19,5 +19,4 @@ HEADERS += \
 FORMS   += \
     mainwindow.ui
 
-# Если у тебя есть подпапки с кодом, убедись, что они указаны правильно:
 INCLUDEPATH += rc4 rsa md5
