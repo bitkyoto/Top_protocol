@@ -398,6 +398,17 @@ void MainWindow::on_btnVerify_clicked()
         return;
     }
 
+    if (!verifyCert(certAlice, certCA))
+    {
+        logBob("Alice certificate verification: INVALID");
+        QMessageBox::warning(this, "Verify", "Alice certificate INVALID. Cannot verify signature.");
+        return;
+    }
+    else
+    {
+        logBob("Alice certificate verification: VALID");
+    }
+
     // читаем расшифрованное сообщение
     std::ifstream fin("Bob/inbox/dec/message.dec", std::ios::binary);
     if (!fin.is_open())
